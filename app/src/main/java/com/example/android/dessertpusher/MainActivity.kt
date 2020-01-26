@@ -18,6 +18,7 @@ package com.example.android.dessertpusher
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -64,6 +65,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // консольлогаю хуки жизненного циклаю. Этот хук при создании активити но до редеринга картинки
+        Log.i("MainActivity", "onCreate called")
 
         // Use Data Binding to get reference to the views
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -78,6 +81,14 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
         // Make sure the correct dessert is showing
         binding.dessertButton.setImageResource(currentDessert.imageId)
+    }
+
+    /** Lifecycle Methods **/
+
+    override fun onStart() {
+        super.onStart()
+        // консольлогаю хуки жизненного циклаю. Этот хук при рендере приложухи
+        Log.i("MainActivity", "onStart Called")
     }
 
     /**
