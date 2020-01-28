@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
 
+    // Выделяем память под тайимер, переменная заинитится на хуке onCreate
+    private lateinit var timer: DessertTimer
+
     /** Dessert Data **/
 
     /**
@@ -75,6 +78,9 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             onDessertClicked()
         }
 
+        // Создаем инстанс таймера
+        timer = DessertTimer()
+
         // Set the TextViews to the right values
         binding.revenue = revenue
         binding.amountSold = dessertsSold
@@ -89,6 +95,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         super.onStart()
         // консольлогаю хуки жизненного циклаю. Этот хук при рендере приложухи
         Timber.i("onStart Called")
+        // Как только активити нарисуется, таймер начнет отсчет
+        timer.startTimer()
     }
 
     override fun onResume() {
@@ -104,6 +112,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onStop() {
         super.onStop()
         Timber.i("onStop Called")
+        // Как только приложуха остановится и скроется из вида, таймер стопанется
+        timer.stopTimer()
     }
 
     override fun onDestroy() {
