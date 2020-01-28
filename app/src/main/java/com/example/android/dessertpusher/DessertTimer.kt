@@ -17,6 +17,9 @@
 package com.example.android.dessertpusher
 
 import android.os.Handler
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import timber.log.Timber
 
 /**
@@ -34,7 +37,14 @@ import timber.log.Timber
  * https://developer.android.com/guide/components/processes-and-threads
  *
  */
-class DessertTimer {
+// Наследование от LifecycleObserver позволяет навешивать на методы этого класса аннотации,
+// которые привязывают методы к жизненному циклу активити, где был создан инстанс этого класса
+class DessertTimer(lifecycle: Lifecycle) : LifecycleObserver {
+
+    // устанавливаем связь между полученным в параметр объектом жизненного цикла Активити / фрагмента и текущим классом
+    init {
+        lifecycle.addObserver(this)
+    }
 
     // The number of seconds counted since the timer started
     var secondsCount = 0
@@ -47,6 +57,9 @@ class DessertTimer {
     private lateinit var runnable: Runnable
 
 
+    // этой аннотацией мы подписываем данный метод на
+    // срабатываение в указанный момент жизненного цикла
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun startTimer() {
         // Create the runnable action, which prints out a log and increments the seconds counter
         runnable = Runnable {
@@ -65,6 +78,9 @@ class DessertTimer {
         // In this case, no looper is defined, and it defaults to the main or UI thread.
     }
 
+    // этой аннотацией мы подписываем данный метод на
+    // срабатываение в указанный момент жизненного цикла
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stopTimer() {
         // Removes all pending posts of runnable from the handler's queue, effectively stopping the
         // timer

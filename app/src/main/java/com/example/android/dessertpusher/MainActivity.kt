@@ -79,7 +79,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         }
 
         // Создаем инстанс таймера
-        timer = DessertTimer()
+        // теперь в параметр передается жизненный цикл данного активити, и класс вызывает методы основываясь на него
+        timer = DessertTimer(this.lifecycle)
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -95,8 +96,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         super.onStart()
         // консольлогаю хуки жизненного циклаю. Этот хук при рендере приложухи
         Timber.i("onStart Called")
-        // Как только активити нарисуется, таймер начнет отсчет
-        timer.startTimer()
     }
 
     override fun onResume() {
@@ -112,8 +111,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onStop() {
         super.onStop()
         Timber.i("onStop Called")
-        // Как только приложуха остановится и скроется из вида, таймер стопанется
-        timer.stopTimer()
     }
 
     override fun onDestroy() {
