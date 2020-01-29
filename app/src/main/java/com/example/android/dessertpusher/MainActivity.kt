@@ -28,6 +28,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import com.example.android.dessertpusher.databinding.ActivityMainBinding
 
+/** Константы onSaveInstanceState Bundle **/
+const val KEY_REVENUE = "revenue_key"
+const val KEY_DESSERT_SOLD = "dessert_sold_key"
+const val KEY_TIMER_SECONDS = "timer_seconds_key"
+
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private var revenue = 0
@@ -88,6 +93,16 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
         // Make sure the correct dessert is showing
         binding.dessertButton.setImageResource(currentDessert.imageId)
+
+        // Смотрим есть ли чо в бандле, если есть - восстанавливаем данные. Если нет - ничего не делаем
+        if (savedInstanceState != null) {
+            // Get all the game state information from the bundle, set it
+            revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
+            dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD, 0)
+            timer.secondsCount = savedInstanceState.getInt(KEY_TIMER_SECONDS, 0)
+            showCurrentDessert()
+
+        }
     }
 
     /** Lifecycle Methods **/
@@ -111,6 +126,23 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onStop() {
         super.onStop()
         Timber.i("onStop Called")
+    }
+
+    /**
+     * Вызывается, когда пользак сворачивает приложуху или поворачивает экран
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Складываем в бандл значения по ключам чтобы потом восстановить данные
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+        outState.putInt(KEY_TIMER_SECONDS, timer.secondsCount)
+        Timber.i("onSaveInstanceState Called")
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Timber.i("onRestoreInstanceState Called")
     }
 
     override fun onDestroy() {
